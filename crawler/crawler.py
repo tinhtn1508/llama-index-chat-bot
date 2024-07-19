@@ -15,7 +15,7 @@ def list_llama_index_blogs() -> list:
     jina_reader_url = 'https://r.jina.ai/{}'.format(LLAMA_INDEX_BLOGS_URL)
     response = requests.get(url=jina_reader_url, headers=HEADERS, timeout=30)
     if response.status_code != 200:
-        raise Exception('Failed to fetch the page: {}, err: {}'.format(url, response.text))
+        raise Exception('Failed to fetch the page: {}, err: {}'.format(jina_reader_url, response.text))
     raw_text = response.text
     raw_text = raw_text.split("Markdown Content:")[1].split('\n')
     pattern = r"\[(.*?)\]\((.*?)\)"
@@ -41,9 +41,9 @@ def list_llama_index_blogs() -> list:
 
 def get_blog_detail(url: str) -> str:
     jina_reader_url = 'https://r.jina.ai/{}'.format(url)
-    response = requests.get(url=jina_reader_url, headers=HEADERS, timeout=30)
+    response = requests.get(url=jina_reader_url, headers=HEADERS, timeout=60)
     if response.status_code != 200:
-        raise Exception('Failed to fetch the page: {}, err: {}'.format(url, response.text))
+        raise Exception('Failed to fetch the page: {}, err: {}'.format(jina_reader_url, response.text))
     return response.text
 
 def store_blog_detail(meta: dict, data: str) -> None:
