@@ -4,7 +4,24 @@
 
 Using OpenAI/Gemini/Claude API or open-source LLMs models, combined with the knowledge learned about RAG techniques, to build a Chatbot application that accurately answers questions related to all the articles on the llama-index blog: https://www.llamaindex.ai/blog.
 
-## Demo
+## How to crawl data
+
+```
+python3 main.py --type crawler
+```
+## How to embedding data
+
+```
+python3 main.py --type embedding --embedding_type transformer
+```
+
+## How ask question 
+
+```
+python3 main.py --type server --embedding_type transformer
+```
+
+## There are some question and answer from chat-bot
 
 Question 1
 
