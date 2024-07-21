@@ -4,6 +4,7 @@ import re
 import os
 import time
 import config
+import json
 
 LLAMA_INDEX_BLOGS_URL = 'https://www.llamaindex.ai/blog'
 HEADERS = {
@@ -39,21 +40,27 @@ def list_llama_index_blogs() -> list:
         })
     return result
 
-def get_blog_detail(url: str) -> str:
+def get_blog_detail(url: str, response_type: str) -> str:
     jina_reader_url = 'https://r.jina.ai/{}'.format(url)
-    response = requests.get(url=jina_reader_url, headers=HEADERS, timeout=60)
+    header = HEADERS
+    header['x-respond-with'] = response_type
+    response = requests.get(url=jina_reader_url, headers=header, timeout=60)
     if response.status_code != 200:
         raise Exception('Failed to fetch the page: {}, err: {}'.format(jina_reader_url, response.text))
     return response.text
 
-def store_blog_detail(meta: dict, data: str) -> None:
+def store_blog_detail(meta: dict, text: str, markdown: str) -> None:
     file_name = hashlib.md5(meta['url'].encode()).hexdigest()
     if not os.path.exists(config.conf['crawler']['data_path']):
         os.makedirs(config.conf['crawler']['data_path'])
-    path = '{}/{}.txt'.format(config.conf['crawler']['data_path'], file_name)
+    path = '{}/{}.json'.format(config.conf['crawler']['data_path'], file_name)
     if os.path.exists(path):
         print('The file {} already exists, skip storing'.format(file_name))
         return
     print('Start storing the blog detail to file: {}'.format(path))
     with open(path, 'w') as f:
-        f.write(data)
+        f.write(json.dumps({
+            'meta': meta,
+            'text_content': text,
+            'markdown_content': markdown
+        }))

@@ -5,6 +5,7 @@
     },
     "server": {
         "port": 3000
-
-    }
+    },
+    "google_api_key": "",
+    "huggingface_api_key": ""
 }

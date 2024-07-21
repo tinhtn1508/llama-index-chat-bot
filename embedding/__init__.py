@@ -1,0 +1,1 @@
+from .embedding import load_embedding, get_embedding_function
