@@ -2,7 +2,6 @@ import requests
 import hashlib
 import re
 import os
-import time
 import config
 import json
 

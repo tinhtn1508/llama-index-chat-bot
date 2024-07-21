@@ -3,7 +3,6 @@ from typing import List
 
 import google.generativeai as genai
 import chromadb
-from chromadb.utils import embedding_functions
 import config
 import embedding
 

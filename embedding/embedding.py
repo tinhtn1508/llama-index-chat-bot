@@ -2,12 +2,9 @@ import chromadb
 import os
 import tqdm
 import json
-
 from chromadb.utils import embedding_functions
-from langchain_text_splitters import MarkdownHeaderTextSplitter
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import config
-from IPython.display import Markdown
 
 def load_embedding(documents_directory: str, collection_name: str, persist_directory: str, embedding_type: str) -> None:
     documents = []
