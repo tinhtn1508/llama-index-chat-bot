@@ -8,6 +8,7 @@ from openai import OpenAI
 import chromadb
 import config
 import embedding
+import backoff
 
 def build_prompt(query: str, context: List[str]) -> str:
     context = " ".join(context)
@@ -50,6 +51,7 @@ def server(collection_name: str = "documents_collection", persist_directory: str
         print(f"Source documents:\n{sources}")
         print("\n")
 
+@backoff.on_exception(backoff.constant, ValueError, interval=1, max_tries=5)
 def generate_response(prompt: str, llm: str) -> str:
     if llm == 'gemini':
         model = genai.GenerativeModel("gemini-pro")
