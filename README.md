@@ -9,7 +9,7 @@ Using OpenAI/Gemini/Claude API or open-source LLMs models, combined with the kno
 ```
 python3 main.py --type crawler
 ```
-## How to embedding data
+## How to embed data
 
 ```
 python3 main.py --type embedding --embedding_type transformer
