@@ -48,16 +48,16 @@ def server(collection_name: str = "documents_collection", persist_directory: str
             results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"])
         else:
             results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"], where={"date": {"$in": dates}})
-        sources = "\n".join(
-            [
-                f"URL: {result['url']} - Chunk_id: {result['chunk_id']}"
-                for result in results["metadatas"][0]
-            ]
-        )
         response = generate_response(build_prompt(query, results["documents"][0]), llm)
         print(response)
         print("\n")
         if display_sources:
+            sources = "\n".join(
+                [
+                    f"URL: {result['url']} - Chunk_id: {result['chunk_id']}"
+                    for result in results["metadatas"][0]
+                ]
+            )
             print(f"Source documents:\n{sources}")
             print("\n")
 
