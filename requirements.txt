@@ -1,0 +1,5 @@
+chromadb
+langchain_text_splitters
+mistralai
+openai
+google.generativeai

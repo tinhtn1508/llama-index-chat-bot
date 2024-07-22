@@ -1,6 +1,4 @@
-import os
 from typing import List
-
 import google.generativeai as genai
 from mistralai.client import MistralClient
 from mistralai.models.chat_completion import ChatMessage
@@ -9,6 +7,7 @@ import chromadb
 import config
 import embedding
 import backoff
+import signal
 
 def build_prompt(query: str, context: List[str]) -> str:
     context = " ".join(context)
@@ -31,18 +30,23 @@ def server(collection_name: str = "documents_collection", persist_directory: str
     collection = client.get_collection(
         name=collection_name, embedding_function=embedding_function
     )
+    is_exit = False
+    def handler(signum, frame):
+        print("\nExiting...")
+        exit(0)
+    signal.signal(signal.SIGINT, handler)
     while True:
         query = input("Question: ")
+        query = query.strip(" ")
         if len(query) == 0:
             print("Please enter a question. Ctrl+C to Quit.\n")
             continue
         print("\nThinking...\n")
         results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"])
-
         sources = "\n".join(
             [
                 f"URL: {result['url']} - Chunk_id: {result['chunk_id']}"
-                for result in results["metadatas"][0]  # type: ignore
+                for result in results["metadatas"][0]
             ]
         )
         response = generate_response(build_prompt(query, results["documents"][0]), llm)
