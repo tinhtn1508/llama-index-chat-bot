@@ -8,6 +8,7 @@ import config
 import embedding
 import backoff
 import signal
+import common
 
 def build_prompt(query: str, context: List[str]) -> str:
     context = " ".join(context)
@@ -38,11 +39,15 @@ def server(collection_name: str = "documents_collection", persist_directory: str
     while True:
         query = input("Question: ")
         query = query.strip(" ")
+        dates = common.extract_dates(query)
         if len(query) == 0:
             print("Please enter a question. Ctrl+C to Quit.\n")
             continue
         print("\nThinking...\n")
-        results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"])
+        if len(dates) == 0:
+            results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"])
+        else:
+            results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"], where={"date": {"$in": dates}})
         sources = "\n".join(
             [
                 f"URL: {result['url']} - Chunk_id: {result['chunk_id']}"
