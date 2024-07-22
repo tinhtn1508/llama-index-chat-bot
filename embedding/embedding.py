@@ -59,7 +59,7 @@ def chunking_document(filename: str, chunking_type: str) -> list:
         })
     return documents, metadata
 
-def get_embedding_function(embedding_type: str):
+def get_embedding_function(embedding_type: str) -> embedding_functions.EmbeddingFunction:
     if embedding_type == 'google':
         return embedding_functions.GoogleGenerativeAiEmbeddingFunction(
             api_key=config.conf['google_api_key']
