@@ -52,3 +52,7 @@ def extract_dates(raw_string: str) -> list:
         token = match.split("-")
         date.append(f"{convert_month[token[1]]} {token[2]}, {token[0]}")
     return date
+
+def extract_urls(raw_string: str) -> str:
+    urls = re.findall(r'(https?://[^\s]+)', raw_string)
+    return urls

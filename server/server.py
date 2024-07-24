@@ -40,14 +40,17 @@ def server(collection_name: str = "documents_collection", persist_directory: str
         query = input("Question: ")
         query = query.strip(" ")
         dates = common.extract_dates(query)
+        urls = common.extract_urls(query)
         if len(query) == 0:
             print("Please enter a question. Ctrl+C to Quit.\n")
             continue
         print("\nThinking...\n")
-        if len(dates) == 0:
-            results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"])
+        if len(dates) != 0:
+            results = collection.query(query_texts=[query], n_results=7, include=["documents", "metadatas"], where={"date": {"$in": dates}})
+        elif len(urls) != 0:
+            results = collection.query(query_texts=[query], n_results=7, include=["documents", "metadatas"], where={"url": {"$in": urls}})
         else:
-            results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"], where={"date": {"$in": dates}})
+            results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"])
         response = generate_response(build_prompt(query, results["documents"][0]), llm)
         print(response)
         print("\n")
