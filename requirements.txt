@@ -3,3 +3,5 @@ langchain_text_splitters
 mistralai
 openai
 google.generativeai
+sentence_transformers
+spacy

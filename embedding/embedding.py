@@ -4,7 +4,11 @@ import tqdm
 import json
 from chromadb.utils import embedding_functions
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_text_splitters import SentenceTransformersTokenTextSplitter
+from langchain_text_splitters import SpacyTextSplitter
 import config
+
+
 
 def load_embedding(documents_directory: str, collection_name: str, persist_directory: str, embedding_type: str) -> None:
     documents = []
@@ -12,7 +16,8 @@ def load_embedding(documents_directory: str, collection_name: str, persist_direc
     files = os.listdir(documents_directory)
     for file in tqdm.tqdm(files, desc='Reading documents'):
         file_path = os.path.join(documents_directory, file)
-        doc, meta = chunking_document(file_path, 'line')
+        doc, meta = chunking_document(file_path, 'spacy')
+        raise ValueError('Invalid embedding type')
         for d in doc:
             documents.append(d)
         for m in meta:
@@ -41,13 +46,23 @@ def chunking_document(filename: str, chunking_type: str) -> list:
     with open(filename, 'r') as f:
         raw_text = json.load(f)
     text_content = raw_text['text_content']
-    text_splitter = RecursiveCharacterTextSplitter(
-        separators=['\n', '.'],
-        chunk_size=1000,
-        chunk_overlap=500,
-        length_function=len,
-        is_separator_regex=False,
-    )
+    if chunking_type == 'recursive_character':
+        text_splitter = RecursiveCharacterTextSplitter(
+            separators=['\n', '.'],
+            chunk_size=1000,
+            chunk_overlap=500,
+            length_function=len,
+            is_separator_regex=False,
+        )
+    elif chunking_type == 'sentence_transformers_token':
+        text_splitter = SentenceTransformersTokenTextSplitter(
+            chunk_overlap=300,
+            tokens_per_chunk=384,
+        )
+    elif chunking_type == 'spacy':
+        text_splitter = SpacyTextSplitter()
+    else:
+        raise ValueError(f'Invalid chunking type: {chunking_type}')
     texts = text_splitter.split_text(text_content)
     for i, text in enumerate(texts):
         documents.append(text)
