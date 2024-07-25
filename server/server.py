@@ -24,10 +24,10 @@ def build_prompt(query: str, context: List[str]) -> str:
     return prompt
 
 
-def server(collection_name: str = "documents_collection", persist_directory: str = ".", embedding_type: str = 'google', llm: str = 'gemini', display_sources: bool = False) -> None:
+def server(collection_name: str = "documents_collection", persist_directory: str = ".", embedding_type: str = 'google', chunking_type: str = '', llm: str = 'gemini', display_sources: bool = False) -> None:
     client = chromadb.PersistentClient(path=persist_directory)
     embedding_function = embedding.get_embedding_function(embedding_type)
-    collection_name = collection_name if embedding_type == 'google' else collection_name + "_" + embedding_type
+    collection_name = collection_name +  "_" + embedding_type + "_" + chunking_type
     collection = client.get_collection(
         name=collection_name, embedding_function=embedding_function
     )

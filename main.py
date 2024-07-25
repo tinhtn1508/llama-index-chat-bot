@@ -10,6 +10,7 @@ if __name__ == '__main__':
     parser.add_argument('--embedding_type', type=str, default='google', help='embedding type')
     parser.add_argument('--llm', type=str, default='gemini', help='llm type')
     parser.add_argument('--display_sources', type=bool, default=False, help='display sources')
+    parser.add_argument('--chunking_type', type=str, default='recursive_character', help='chunking type')
     parser.parse_args()
     args = parser.parse_args()
     if args.type == 'crawler':
@@ -23,7 +24,7 @@ if __name__ == '__main__':
         print('Finish crawling the llama index blogs')
     elif args.type == 'embedding':
         print('Start loading the embedding...')
-        embedding.load_embedding(documents_directory='data', collection_name=args.collection_name, persist_directory='chroma_storage', embedding_type=args.embedding_type)
+        embedding.load_embedding(documents_directory='data', collection_name=args.collection_name, persist_directory='chroma_storage', embedding_type=args.embedding_type, chunking_type=args.chunking_type)
         print('Finish loading the embedding')
     else:
-        server.server(collection_name='llama_index_blogs', persist_directory='chroma_storage', embedding_type='google', llm=args.llm, display_sources=args.display_sources)
+        server.server(collection_name='llama_index_blogs', persist_directory='chroma_storage', embedding_type=args.embedding_type, chunking_type=args.chunking_type, llm=args.llm, display_sources=args.display_sources)

@@ -3,9 +3,8 @@
         "jina_api_key": "",
         "data_path": "data"
     },
-    "server": {
-        "port": 3000
-    },
     "google_api_key": "",
-    "huggingface_api_key": ""
+    "huggingface_api_key": "",
+    "openai_api_key": "",
+    "mistral_api_key": ""
 }

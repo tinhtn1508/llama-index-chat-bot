@@ -5,26 +5,23 @@ import json
 from chromadb.utils import embedding_functions
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_text_splitters import SentenceTransformersTokenTextSplitter
-from langchain_text_splitters import SpacyTextSplitter
 import config
 
 
-
-def load_embedding(documents_directory: str, collection_name: str, persist_directory: str, embedding_type: str) -> None:
+def load_embedding(documents_directory: str, collection_name: str, persist_directory: str, embedding_type: str, chunking_type: str) -> None:
     documents = []
     metadatas = []
     files = os.listdir(documents_directory)
     for file in tqdm.tqdm(files, desc='Reading documents'):
         file_path = os.path.join(documents_directory, file)
-        doc, meta = chunking_document(file_path, 'spacy')
-        raise ValueError('Invalid embedding type')
+        doc, meta = chunking_document(file_path, chunking_type)
         for d in doc:
             documents.append(d)
         for m in meta:
             metadatas.append(m)
     client = chromadb.PersistentClient(path=persist_directory)
     embedding_function = get_embedding_function(embedding_type)
-    collection_name = collection_name if embedding_type == 'google' else collection_name +  "_" + embedding_type
+    collection_name = collection_name +  "_" + embedding_type + "_" + chunking_type
     collection = client.get_or_create_collection(
         name=collection_name, embedding_function=embedding_function
     )
@@ -50,7 +47,7 @@ def chunking_document(filename: str, chunking_type: str) -> list:
         text_splitter = RecursiveCharacterTextSplitter(
             separators=['\n', '.'],
             chunk_size=1000,
-            chunk_overlap=500,
+            chunk_overlap=800,
             length_function=len,
             is_separator_regex=False,
         )
@@ -59,12 +56,12 @@ def chunking_document(filename: str, chunking_type: str) -> list:
             chunk_overlap=300,
             tokens_per_chunk=384,
         )
-    elif chunking_type == 'spacy':
-        text_splitter = SpacyTextSplitter()
     else:
         raise ValueError(f'Invalid chunking type: {chunking_type}')
     texts = text_splitter.split_text(text_content)
     for i, text in enumerate(texts):
+        if len(text) < 20:
+            continue
         documents.append(text)
         metadata.append({
             'title': raw_text['meta']['title'],
