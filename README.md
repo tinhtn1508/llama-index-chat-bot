@@ -6,14 +6,14 @@ Using OpenAI/Gemini/Claude API or open-source LLMs models, combined with the kno
 
 ## Prerequisite
 
-Python version: 3.12.3
+**Python version**: 3.12.3
 
-Install dependencies
+**Install dependencies**
 ```
 pip install -r requirements.txt
 ```
 
-Setup environment, go to the `config.json` in `config` folder and fill the necessary api keys.
+**Set up the environment**: Go to the config.json file in the config folder and fill in the necessary API keys.
 ```
 "crawler": {
     "jina_api_key": "",
