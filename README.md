@@ -29,8 +29,8 @@ pip install -r requirements.txt
 ## How to start
 
 There are two options for you:
-- **Build from scratch**: Firstly you must delete the `chroma_storage` folder, then go through 3 steps below.
-- **Only start bot server for ask and answer**.  I highly recommend this approach to save time. I have already crawled and embedded the data in some ways. Please bypass steps 1 and 2 and go directly to step 3.
+- **Build from scratch**: Go through 3 steps below.
+- **Only start bot server for ask and answer**.  I highly recommend this approach to save time. I have already crawled and embedded the data in some ways. First, you run this command to download the local db `python3 download.py` (this script will download db on google drive and unzip to `chroma_storage` folder). Then bypass steps 1 and 2 and go directly to step 3.
 
 
 ### 1. How to crawl data
